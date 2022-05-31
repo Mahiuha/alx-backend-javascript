@@ -1,22 +1,22 @@
 const readDatabase = require('../utils');
 
-export default class StudentsController {
+const arrToStr = (arr) => arr.reduce((a, b, i) => a + b + (i === arr.length - 1 ? '' : ', '), '');
+
+class StudentsController {
   static async getAllStudents(request, response) {
-    const resp = [];
-    let msg = 'This is the list of our students\n';
-    resp.push(msg);
     try {
-      const students = await readDatabase('database.csv');
-      Object.keys(students).forEach((key) => {
-        const count = students[key].length;
-        const listFN = students[key].join(', ');
-        msg = `Number of students in ${key}: ${count}. List: ${listFN}`;
-        resp.push(msg);
-      });
-      response.status(200);
-      response.send(`${resp.join('\n')}`);
-    } catch (e) {
-      response.send('Cannot load the database');
+      const { cs, swe } = await readDatabase(process.argv[2]);
+      let output = 'This is the list of our students\n';
+      output += `Number of students in CS: ${cs.length}. List: ${arrToStr(
+        cs,
+      )}\n`;
+      output += `Number of students in SWE: ${swe.length}. List: ${arrToStr(
+        swe,
+      )}\n`;
+      response.status(200).send(output);
+    } catch (err) {
+      console.log(err);
+      response.status(500).send('Cannot load the database');
     }
   }
 
@@ -24,18 +24,18 @@ export default class StudentsController {
     const { major } = request.params;
     if (major !== 'CS' && major !== 'SWE') {
       response.status(500).send('Major parameter must be CS or SWE');
-    }
-    const resp = [];
-    let msg;
-    try {
-      const students = await readDatabase('database.csv');
-      const listFN = students[major].join(', ');
-      msg = `List: ${listFN}`;
-      resp.push(msg);
-      response.status(200);
-      response.send(`${resp.join('\n')}`);
-    } catch (e) {
-      response.send('Cannot load the database');
+    } else {
+      try {
+        const { cs, swe } = await readDatabase(process.argv[2]);
+        response
+          .status(200)
+          .send(`List: ${arrToStr(major === 'CS' ? cs : swe)}`);
+      } catch (err) {
+        console.log(err);
+        response.status(500).send('Cannot load the database');
+      }
     }
   }
 }
+
+module.exports = StudentsController;

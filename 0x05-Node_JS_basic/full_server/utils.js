@@ -1,31 +1,21 @@
 const fs = require('fs');
 
-async function readDatabase(path) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path, { encoding: 'utf8' }, (err, data) => {
-      if (err) {
-        reject(Error('Cannot load the database'));
-        return;
-      }
-      const resp = {};
+const aggregate = (data) => data.slice(1).reduce(
+  (a, b) => {
+    const [first, , , field] = b.split(',');
+    if (field === 'CS') {
+      a.cs.push(first);
+    } else if (field === 'SWE') a.swe.push(first);
+    return a;
+  },
+  { cs: [], swe: [] },
+);
 
-      let content = data.toString().split('\n');
-      content = content.filter((item) => item);
-      if (content.length > 0) {
-        content.shift();
-      }
-
-      const students = content.map((student) => student.split(','));
-      const setField = new Set();
-      students.forEach((student) => setField.add(student[3]));
-      setField.forEach((field) => {
-        const group = students.filter((student) => student[3] === field);
-        const names = group.map((student) => student[0]);
-        resp[field] = names;
-      });
-      resolve(resp);
-    });
+const readDatabase = (path) => new Promise((resolve, reject) => {
+  fs.readFile(path, 'utf-8', (err, res) => {
+    if (err) return reject(new Error('Cannot load the database'));
+    return resolve(aggregate(res.split('\n')));
   });
-}
+});
 
 module.exports = readDatabase;
