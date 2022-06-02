@@ -1,26 +1,22 @@
-const assert = require("assert");
-const calcnum = require('./0-calcul.js');
-
-describe('Round', function () {
-  it('should work without rounding', function () {
-    assert.equal(calcnum(3, 4), 7);
+const calculatorNumber = require('./0-calcul.js');
+const assert = require('assert');
+ 
+describe('calculateNumber', () => {
+    it('checks the output', () => {
+      assert.strictEqual(calculateNumber(1, 3), 4);
+      assert.strictEqual(calculateNumber(1, 3.7), 5);
+      assert.strictEqual(calculateNumber(1.2, 3.7), 5);
+      assert.strictEqual(calculateNumber(1.5, 3.7), 6);
+      assert.strictEqual(calculateNumber(3.7, 1), 5);
+      assert.strictEqual(calculateNumber(3.7, 1.2), 5);
+    });
+    it('negative numbers', () => {
+      assert.strictEqual(calculateNumber(-1, 1), 0);
+      assert.strictEqual(calculateNumber(1, -1), 0);
+      assert.strictEqual(calculateNumber(-1, -1), -2);
+    });
+    it('checks arguments', () => {
+      assert.strictEqual(isNaN(calculateNumber(1)), true);
+      assert.strictEqual(isNaN(calculateNumber()), true);
+    });
   });
-  it('should work with rounding', function () {
-    assert.equal(calcnum(3.4, 4.2), 7);
-  });
-  it('should work without rounding', function () {
-    assert.equal(calcnum(3.0, 4.0), 7);
-  });
-  it('should work without rounding', function () {
-    assert.equal(calcnum(-3, 4), 1);
-  });
-  it('should work without rounding', function () {
-    assert.equal(calcnum(3, - 4), -1);
-  });
-  it('should work with rounding', function () {
-    assert.equal(calcnum(-3.4, 4.5), 2);
-  });
-  it('should work with rounding', function () {
-      assert.equal(calcnum(-3.5, 2), -1);
-  });
-})
