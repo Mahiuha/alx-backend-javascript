@@ -1,18 +1,34 @@
-'use strict';
-const calculateNumber = (type, a, b) => {
+const SUM = "SUM";
+const SUBTRACT = "SUBTRACT";
+const DIVIDE = "DIVIDE";
+
+const isNegZero = (n) => {
+  n = Number(n);
+  return n === 0 && 1 / n === -Infinity;
+};
+
+module.exports = function calculateNumber(type, a, b = 0) {
+  let aNum = Number(a);
+  let bNum = Number(b);
+
+  if (Number.isNaN(aNum) || Number.isNaN(bNum))
+    throw TypeError("Parameters must be numbers or able to coerce to number");
+
+  aNum = Math.round(aNum);
+  bNum = Math.round(bNum);
+
   switch (type) {
-    case 'SUM':
-      return Math.round(a) + Math.round(b);
-      break;
-    case 'SUBTRACT':
-      return Math.round(a) - Math.round(b);
-      break;
-    case 'DIVIDE':
-      if (Math.round(b) === 0) return 'Error';
-      return Math.round(a) / Math.round(b);
-      break;
+    case SUM:
+      return aNum + bNum;
+    case SUBTRACT:
+      return aNum - bNum;
+    case DIVIDE:
+      if (bNum === 0) return "ERROR";
+      const res = aNum / bNum;
+      return isNegZero(res) ? 0 : res;
     default:
-      break;
-  };
-}
-module.exports = calculateNumber;
+      throw Error(
+        'Invalid operation type. Valid types are "SUM", "SUBTRACT", and "DIVIDE".'
+      );
+  }
+};

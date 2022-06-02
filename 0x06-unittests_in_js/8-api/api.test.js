@@ -1,19 +1,17 @@
-'use strict';
-const request = require('request');
-const chai = require('chai');
+const chai = require("chai");
+const chaiHttp = require("chai-http");
 
-describe('basic integration testing', () => {
-  describe('GET /', () => {
-    it('endpoint GET /', (done) => {
-      const call = {
-        url: 'http://localhost:7865',
-        method: 'GET',
-      };
-      request(call, (error, response, body) => {
-        chai.expect(response.statusCode).to.equal(200);
-        chai.expect(body).to.equal('Welcome to the payment system');
-        done();
+chai.use(chaiHttp);
+
+describe("GET /", () => {
+  it("/ correct status, result", () => {
+    chai
+      .request("http://localhost:7865")
+      .get("/")
+      .end((err, res) => {
+        if (err) throw err;
+        chai.expect(res.statusCode).to.equal(200);
+        chai.expect(res.text).to.equal("Welcome to the payment system");
       });
-    });
   });
 });

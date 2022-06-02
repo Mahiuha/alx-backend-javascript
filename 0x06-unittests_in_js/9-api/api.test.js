@@ -1,47 +1,35 @@
-'use strict';
-const request = require('request');
 const chai = require('chai');
+const chaiHttp = require('chai-http');
 
-describe('basic integration testing', () => {
-  describe('GET /', () => {
-    it('endpoint: GET /', (done) => {
-      const call = {
-        url: 'http://localhost:7865',
-        method: 'GET',
-      };
-      request(call, (error, response, body) => {
-        chai.expect(response.statusCode).to.equal(200);
-        chai.expect(body).to.equal('Welcome to the payment system');
-        done();
-      });
-    });
-  });
-});
+chai.use(chaiHttp);
 
-describe('regex integration testing', () => {
-  describe('GET /cart/:id', () => {
-    it('endpoint: GET /cart/:id', (done) => {
-      const call = {
-        url: 'http://localhost:7865/cart/12',
-        method: 'GET',
-      };
-      request(call, (error, response, body) => {
-        chai.expect(response.statusCode).to.equal(200);
-        chai.expect(body).to.equal('Payment methods for cart 12');
-        done();
+describe('GET /', () => {
+  it('/ correct status, result', () => {
+    chai.request('http://localhost:7865')
+      .get('/')
+      .end((err, res) => {
+        if (err) throw err;
+        chai.expect(res.statusCode).to.equal(200);
+        chai.expect(res.text).to.equal('Welcome to the payment system');
+      })
+  })
+})
+describe('GET /cart/:id', () => {
+  it('correct status, result', () => {
+    chai.request('http://localhost:7865')
+      .get('/cart/12')
+      .end((err, res) => {
+        if (err) throw err;
+        chai.expect(res.statusCode).to.equal(200);
+        chai.expect(res.text).to.equal('Payment methods for cart 12');
       });
-    });
-  });
-  describe('GET /cart/:isNaN', () => {
-    it('endpoint: GET /cart/:isNaN', (done) => {
-      const call = {
-        url: 'http://localhost:7865/cart/anything',
-        method: 'GET',
-      };
-      request(call, (error, response, body) => {
-        chai.expect(response.statusCode).to.equal(404);
-        done();
+  })
+  it('correct status if id isNaN', () => {
+    chai.request('http://localhost:7865')
+      .get('/cart/twelve')
+      .end((err, res) => {
+        if (err) throw err;
+        chai.expect(res.statusCode).to.equal(404);
       });
-    });
-  });
-});
+  })
+})

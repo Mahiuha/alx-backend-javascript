@@ -1,4 +1,3 @@
-'use strict';
 const Utils = require('./utils.js');
 
 function sendPaymentRequestToApi(totalAmount, totalShipping) {
