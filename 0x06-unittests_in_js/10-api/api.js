@@ -1,27 +1,35 @@
 const express = require('express');
-
+const bdparser = require('body-parser')
 const app = express();
-app.use(express.json())
+app.use(bdparser.urlencoded({ extended: true }));
+app.use(bdparser.json());
+app.use(bdparser.raw());
+const port = 7865;
 
-app.get('/', (req, res) => res.send('Welcome to the payment system'));
-app.get('/cart/:id', (req, res) => {
-  if (!isNaN(req.params.id)) res.send(`Payment methods for cart ${req.params.id}`);
-  else res.status(404).end();
-})
-app.get('/available_payments', (req, res) => {
-  const obj = {
+app.get('/', (rq, rs) => {
+  rs.send('Welcome to the payment system');
+});
+
+app.get('/cart/:id([0-9]+)', (rq, rs) => {
+  rs.send(`Payment methods for cart ${rq.params.id}`);
+});
+
+app.get('/available_payments', (rq, rs) => {
+  const ob = {
     payment_methods: {
       credit_cards: true,
       paypal: false
     }
-  };
-  res.send(obj);
+  }
+  rs.json(ob);
 });
 
-app.post('/login', (req, res) => {
-  const username = req.body.userName;
-  res.send(`Welcome ${username}`);
+app.post('/login', (rq, rs) => {
+  rs.end(`Welcome ${rq.body.userName}`);
 });
-app.listen(7865, () => console.log('API available on localhost port 7865'));
+
+app.listen(port, () => {
+  console.log(`API available on localhost port ${port}`);
+});
 
 module.exports = app;

@@ -1,18 +1,14 @@
 const chai = require('chai');
-const request = require('request');
 const expect = chai.expect;
+const request = require('request');
 
-describe('/GET request', function() {
-    it('Response from get', function(done) {
-      const options = {
-        url: 'http://localhost:7865',
-        method: 'GET',
-      };
-      request(options, function(err, res, body) {
-        expect(res.statusCode).to.equal(200);
-        expect(body).to.be.a('string');
-        expect(body).to.equal('Welcome to the payment system');
-      });
-      done();
+describe('test the API', () => {
+  it('test the API with status, body', (done) => {
+    request('http://localhost:7865', 'GET', (er, rs, bd) => {
+      if (er) throw er;
+      expect(rs.statusCode).to.equal(200);
+      expect(bd).to.equal('Welcome to the payment system');
     });
+    done();
+  });
 });

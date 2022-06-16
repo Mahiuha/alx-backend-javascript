@@ -1,26 +1,31 @@
 const chai = require('chai');
-const sinon = require('sinon');
-const sendPaymentRequestToApi = require('./5-payment');
-const Utils = require('./utils');
 const expect = chai.expect;
 
+const sinon = require('sinon');
+const sendPaymentRequestToApi = require('./5-payment');
 
-describe('5-paymentTest', function() {
-  let consoleSpy;
+describe('sendPaymentRequestToApi', () => {
+  let consolespy;
+
   beforeEach(() => {
-  consoleSpy = sinon.spy(console, 'log');
+    consolespy = sinon.spy(console, 'log');
   });
   afterEach(() => {
-      consoleSpy.restore();
-  })
-  it('different parameters', function() {
+    consolespy.restore();
+  });
+
+  it('test the send Pyament Request with 100, 20', () => {
     sendPaymentRequestToApi(100, 20);
-    expect(consoleSpy.calledOnce).to.be.true;
-    expect(consoleSpy.calledWith('The total is: 120')).to.be.true;
-  })
-  it('parameters with the same value', function() {
+
+    expect(consolespy.calledWithExactly('The total is: 120')).to.be.true;
+    expect(consolespy.CalledOnce);
+  });
+
+  it('test the send Pyament Request with 10, 10', () => {
     sendPaymentRequestToApi(10, 10);
-    expect(consoleSpy.calledOnce).to.be.true;
-    expect(consoleSpy.calledWith('The total is: 20')).to.be.true;
-  })
+
+    expect(consolespy.calledOnceWithExactly('The total is: 20')).to.be.true;
+    expect(consolespy.CalledOnce);
+  });
+
 });
