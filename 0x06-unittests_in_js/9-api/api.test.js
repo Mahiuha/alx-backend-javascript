@@ -1,35 +1,40 @@
 const chai = require('chai');
-const chaiHttp = require('chai-http');
+const request = require('request');
+const expect = chai.expect;
 
-chai.use(chaiHttp);
-
-describe('GET /', () => {
-  it('/ correct status, result', () => {
-    chai.request('http://localhost:7865')
-      .get('/')
-      .end((err, res) => {
-        if (err) throw err;
-        chai.expect(res.statusCode).to.equal(200);
-        chai.expect(res.text).to.equal('Welcome to the payment system');
-      })
-  })
-})
-describe('GET /cart/:id', () => {
-  it('correct status, result', () => {
-    chai.request('http://localhost:7865')
-      .get('/cart/12')
-      .end((err, res) => {
-        if (err) throw err;
-        chai.expect(res.statusCode).to.equal(200);
-        chai.expect(res.text).to.equal('Payment methods for cart 12');
+describe('/GET request', function() {
+    it('Response from get index', function(done) {
+      const options = {
+        url: 'http://localhost:7865',
+        method: 'GET',
+      };
+      request(options, function(err, res, body) {
+        expect(res.statusCode).to.equal(200);
+        expect(body).to.be.a('string');
+        expect(body).to.equal('Welcome to the payment system');
       });
-  })
-  it('correct status if id isNaN', () => {
-    chai.request('http://localhost:7865')
-      .get('/cart/twelve')
-      .end((err, res) => {
-        if (err) throw err;
-        chai.expect(res.statusCode).to.equal(404);
+      done();
+    });
+    it('response /cart/:id success', function(done) {
+      const options = {
+        url: 'http://localhost:7865/cart/12',
+        method: 'GET',
+      };
+      request(options, function(err, res, body) {
+        expect(res.statusCode).to.equal(200);
+        expect(body).to.be.a('string');
+        expect(body).to.equal('Payment methods for cart 12');
       });
-  })
-})
+      done();
+    });
+    it('response /cart/:id invalid id', function(done) {
+      const options = {
+        url: 'http://localhost:7865/cart/hello',
+        method: 'GET',
+      };
+      request(options, function(err, res, body) {
+        expect(res.statusCode).to.equal(404);
+      });
+      done();
+    });
+});

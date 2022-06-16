@@ -1,17 +1,18 @@
-const chai = require("chai");
-const chaiHttp = require("chai-http");
+const chai = require('chai');
+const request = require('request');
+const expect = chai.expect;
 
-chai.use(chaiHttp);
-
-describe("GET /", () => {
-  it("/ correct status, result", () => {
-    chai
-      .request("http://localhost:7865")
-      .get("/")
-      .end((err, res) => {
-        if (err) throw err;
-        chai.expect(res.statusCode).to.equal(200);
-        chai.expect(res.text).to.equal("Welcome to the payment system");
+describe('/GET request', function() {
+    it('Response from get', function(done) {
+      const options = {
+        url: 'http://localhost:7865',
+        method: 'GET',
+      };
+      request(options, function(err, res, body) {
+        expect(res.statusCode).to.equal(200);
+        expect(body).to.be.a('string');
+        expect(body).to.equal('Welcome to the payment system');
       });
-  });
+      done();
+    });
 });

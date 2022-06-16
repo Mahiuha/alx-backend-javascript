@@ -5,4 +5,5 @@ const Utils = {
     if (type == 'DIVIDE') return Math.round(b) != 0 ? Math.round(a) / Math.round(b) : 'ERROR';
   }
 }
+
 module.exports = Utils;
